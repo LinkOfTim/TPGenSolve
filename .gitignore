@@ -1,12 +1,16 @@
+# Виртуальное окружение
 venv/
+env/
+
+# Кэш Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
+
+# Папки и файлы сборки
 build/
-develop-eggs/
 dist/
 downloads/
 eggs/
@@ -16,6 +20,14 @@ lib64/
 parts/
 sdist/
 var/
+
+# Метафайлы пакетов
 *.egg-info/
 .installed.cfg
 *.egg
+
+# Файлы конфигурации PyInstaller
+TPGenSolve.spec
+
+# Логи
+app.log
