@@ -3,8 +3,8 @@
 import sys
 import logging
 from PyQt5 import QtWidgets
-from view import MainWindow
 from PyQt5.QtGui import QIcon
+from view import MainWindow
 
 class ModelWrapper:
     def solve_transportation(self, suppliers, consumers, cost, solution_type):
