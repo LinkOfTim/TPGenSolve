@@ -1,6 +1,6 @@
 # view.py
 
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 import logging
 import ast
 from transportation_model import solve_problem

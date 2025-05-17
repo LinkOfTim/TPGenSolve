@@ -5,6 +5,7 @@ import logging
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 from view import MainWindow
+from docx import Document
 
 class ModelWrapper:
     def solve_transportation(self, suppliers, consumers, cost, solution_type):
@@ -33,11 +34,6 @@ class ModelWrapper:
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(result)
         elif export_format == "word":
-            try:
-                from docx import Document
-            except ImportError:
-                logging.error("Библиотека python-docx не установлена.")
-                raise ImportError("Библиотека python-docx не установлена.")
             doc = Document()
             # Можно доработать, чтобы вставлять таблицы
             doc.add_paragraph(result)
