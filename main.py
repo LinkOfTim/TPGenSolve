@@ -6,27 +6,16 @@ from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
 from view import MainWindow
 from docx import Document
+from transportation_model import solve_problem
 
 class ModelWrapper:
     def solve_transportation(self, suppliers, consumers, cost, solution_type):
-        if solution_type == 1:
-            logging.info("Выбрано подробное решение")
-            from transportation_model import detailed_solution
-            return detailed_solution.solve_transportation_detailed(suppliers, consumers, cost)
-        elif solution_type == 2:
-            logging.info("Выбран краткий итог решения")
-            from transportation_model import final_solution
-            return final_solution.solve_transportation_final(suppliers, consumers, cost)
-        else:
-            logging.info("Выведены только условия")
-            from transportation_model import conditions
-            problem = {"suppliers": suppliers, "consumers": consumers, "cost": cost}
-            return conditions.format_conditions(problem)
-    
-    def generate_problem(self, n, m):
+        logging.info("Выбрано подробное решение")
+        return solve_problem(suppliers=suppliers, consumers=consumers, solution_type=solution_type, cost=cost) 
+
+    def generate_problem(self, n, m, solution_type):
         logging.info("Генерация проблемы: n=%s, m=%s", n, m)
-        from transportation_model import generation
-        return generation.generate_random_problem(n, m)
+        return solve_problem(n, m, solution_type)
     
     def export_result(self, result, export_format, filename):
         logging.info("Экспорт результата в формате %s, файл: %s", export_format, filename)

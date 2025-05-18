@@ -3,7 +3,6 @@
 from PyQt5 import QtWidgets
 import logging
 import ast
-from transportation_model import solve_problem
 
 class MainWindow(QtWidgets.QMainWindow):
     """
@@ -307,7 +306,8 @@ class SolveDialog(QtWidgets.QDialog):
         export = self.export_checkbox.isChecked()
         export_format = "txt" if self.radio_txt.isChecked() else "word"
 
-        result = solve_problem(suppliers, consumers, solution_type, cost)
+        result = self.model.solve_transportation(suppliers=suppliers, consumers=consumers, 
+                                                 solution_type=solution_type, cost=cost)
         logging.info("Результат решения получен")
 
         if export:
@@ -451,7 +451,7 @@ class GenerateDialog(QtWidgets.QDialog):
             solution_type = self.solution_type_group.checkedId()
 
         # Вызываем решение задачи
-        result = solve_problem(n, m, solution_type)
+        result = self.model.generate_problem(n, m, solution_type)
 
         # Если выбран экспорт, сохраняем результат
         if export:

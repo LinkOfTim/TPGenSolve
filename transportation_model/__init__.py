@@ -4,6 +4,7 @@ from .generation import generate_random_problem
 from .conditions import format_conditions
 from .final_solution import solve_transportation_final
 from .detailed_solution import solve_transportation_detailed
+import logging
 
 def solve_problem(suppliers, consumers, solution_type, cost=None) -> str:
     """
@@ -20,6 +21,7 @@ def solve_problem(suppliers, consumers, solution_type, cost=None) -> str:
     else:
         problem = {"suppliers": suppliers, "consumers": consumers, "cost": cost}
 
+    logging.info(f'Значения, поставщики:{problem["suppliers"]}, потребители:{problem["consumers"]}, таблица стоимостей:{problem["cost"]}')
     if solution_type == 1:
         return solve_transportation_detailed(suppliers, consumers, cost)
     elif solution_type == 2:
