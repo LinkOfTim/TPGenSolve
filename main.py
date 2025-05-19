@@ -16,7 +16,7 @@ class ModelWrapper:
     def generate_problem(self, n, m, solution_type):
         logging.info("Генерация проблемы: n=%s, m=%s", n, m)
         return solve_problem(n, m, solution_type)
-    
+
     def export_result(self, result, export_format, filename):
         logging.info("Экспорт результата в формате %s, файл: %s", export_format, filename)
         if export_format == "txt":
@@ -24,7 +24,6 @@ class ModelWrapper:
                 f.write(result)
         elif export_format == "word":
             doc = Document()
-            # Можно доработать, чтобы вставлять таблицы
             doc.add_paragraph(result)
             doc.save(filename)
         else:
