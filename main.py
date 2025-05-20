@@ -23,6 +23,7 @@ class ModelWrapper:
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(result)
         elif export_format == "word":
+            # NOTE: Можно сделать красивое форматирование таблицы
             doc = Document()
             doc.add_paragraph(result)
             doc.save(filename)
@@ -37,13 +38,13 @@ def main():
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
     logging.info("Приложение запущено.")
-    
+
     app = QtWidgets.QApplication(sys.argv)
     app.setWindowIcon(QIcon("app_icon.ico"))
     model = ModelWrapper()
     main_window = MainWindow(model)
     main_window.show()
-    
+
     exit_code = app.exec()
     logging.info("Приложение закрыто.")
     sys.exit(exit_code)

@@ -1,4 +1,5 @@
 # transportation_model/utils.py
+# PERF: Можно ускорить используя CPython
 
 def balance_problem(suppliers, consumers):
     total_supply = sum(suppliers)
