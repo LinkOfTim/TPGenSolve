@@ -1,14 +1,22 @@
 # transportation_model/detailed_solution
 
-from .utils import balance_problem, northwest_corner, optimize_transportation, compute_potentials, compute_deltas, total_cost
+from .utils import (
+    balance_problem,
+    northwest_corner,
+    optimize_transportation,
+    compute_potentials,
+    compute_deltas,
+    total_cost,
+)
 from .conditions import format_conditions
 from .solution import format_solution
+
 
 def solve_transportation_detailed(suppliers, consumers, cost) -> str:
     # Блок условии
     problem: dict = {"suppliers": suppliers, "consumers": consumers, "cost": cost}
     output = format_conditions(problem=problem)
-    
+
     # Решение
     output += "=== РЕШЕНИЕ ТРАНСПОРТНОЙ ЗАДАЧИ (ПОДРОБНО) ===\n"
     suppliers_bal, consumers_bal, balanced = balance_problem(suppliers, consumers)
@@ -23,29 +31,29 @@ def solve_transportation_detailed(suppliers, consumers, cost) -> str:
     else:
         output += "Задача сбалансирована.\n"
     output += "\n"
-    
+
     n_bal = len(suppliers_bal)
     m_bal = len(consumers_bal)
     output += "Шаг 2: Матрица стоимостей (после балансировки)\n"
     for i in range(n_bal):
         output += "\t".join(str(cost[i][j]) for j in range(m_bal)) + "\n"
     output += "\n"
-    
+
     output += "Шаг 3: Начальное базисное решение (метод северо‑западного угла)\n"
     alloc = northwest_corner(suppliers_bal, consumers_bal)
     for row in alloc:
         output += "\t".join(str(x) for x in row) + "\n"
     output += "\n"
-    
+
     output += "Шаг 4: Оптимизация базисного решения (метод потенциалов)\n"
     alloc_opt, iter_logs = optimize_transportation(cost, alloc)
     output += iter_logs + "\n"
-    
+
     u, v = compute_potentials(cost, alloc_opt)
     output += "Итоговые потенциалы:\n"
     output += f"\tu (строки): {u}\n"
     output += f"\tv (столбцы): {v}\n\n"
-    
+
     delta = compute_deltas(cost, alloc_opt, u, v)
     output += "Итоговые дельты (для не базисных ячеек):\n"
     for i in range(n_bal):
@@ -58,7 +66,7 @@ def solve_transportation_detailed(suppliers, consumers, cost) -> str:
         output += "\t".join(row_d) + "\n"
     output += "\n"
     total = total_cost(cost, alloc_opt)
-    
+
     # Блок Выводов
     output += format_solution(total, alloc_opt)
     return output

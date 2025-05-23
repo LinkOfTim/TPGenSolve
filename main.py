@@ -19,12 +19,16 @@ class ModelWrapper:
             cost=cost,
         )
 
-    def generate_problem(self, n, m, solution_type):
-        logging.info("Генерация проблемы: n=%s, m=%s", n, m)
-        return solve_problem(n, m, solution_type)
+    def generate_problem(self, suppliers, consumers, solution_type):
+        logging.info("Генерация проблемы: n=%s, m=%s", suppliers, consumers)
+        return solve_problem(
+            suppliers=suppliers, consumers=consumers, solution_type=solution_type
+        )
 
     def export_result(self, result, export_format, filename):
-        logging.info("Экспорт результата в формате %s, файл: %s", export_format, filename)
+        logging.info(
+            "Экспорт результата в формате %s, файл: %s", export_format, filename
+        )
         if export_format == "txt":
             with open(filename, "w", encoding="utf-8") as f:
                 f.write(result)
@@ -37,11 +41,12 @@ class ModelWrapper:
             logging.error("Неподдерживаемый формат экспорта: %s", export_format)
             raise ValueError("Неподдерживаемый формат экспорта")
 
+
 def main():
     logging.basicConfig(
         filename="app.log",
         level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s"
+        format="%(asctime)s - %(levelname)s - %(message)s",
     )
     logging.info("Приложение запущено.")
 
@@ -55,5 +60,6 @@ def main():
     logging.info("Приложение закрыто.")
     sys.exit(exit_code)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

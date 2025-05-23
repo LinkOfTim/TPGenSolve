@@ -4,10 +4,12 @@ from PyQt5 import QtWidgets
 import logging
 import ast
 
+
 class MainWindow(QtWidgets.QMainWindow):
     """
     Главное окно с выбором: Решить задачу или Генерировать задачу.
     """
+
     def __init__(self, model):
         super().__init__()
         self.model = model
@@ -37,11 +39,13 @@ class MainWindow(QtWidgets.QMainWindow):
         dialog = GenerateDialog(self, self.model)
         dialog.exec()
 
+
 class SolveDialog(QtWidgets.QDialog):
     """
     Диалог для ввода данных при решении задачи.
     Теперь включает динамические поля для поставщиков, потребителей и матрицы стоимостей.
     """
+
     def __init__(self, parent, model):
         super().__init__(parent)
         self.model = model
@@ -53,18 +57,18 @@ class SolveDialog(QtWidgets.QDialog):
         # Основной лейаут диалога
         main_layout = QtWidgets.QVBoxLayout()
         self.setLayout(main_layout)
-        
+
         # Создаём QScrollArea
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setWidgetResizable(True)
-        
+
         # Создаём внутренний виджет, в котором будут поля ввода
         self.inner_widget = QtWidgets.QWidget()
         self.inner_layout = QtWidgets.QVBoxLayout(self.inner_widget)
-        
+
         # Добавляем внутренний виджет в scroll_area
         self.scroll_area.setWidget(self.inner_widget)
-        
+
         # Теперь добавляем scroll_area в основной лейаут
         main_layout.addWidget(self.scroll_area)
 
@@ -74,7 +78,6 @@ class SolveDialog(QtWidgets.QDialog):
         self.initUI()
 
     def initUI(self):
-
         # Ввод количества поставщиков и потребителей
         self.n_label = QtWidgets.QLabel("Количество поставщиков (n):")
         self.n_input = QtWidgets.QLineEdit()
@@ -163,7 +166,9 @@ class SolveDialog(QtWidgets.QDialog):
 
     def create_value_fields(self):
         # Очищаем предыдущие поля для поставщиков, потребителей и матрицы стоимости
-        logging.info("Создание полей ввода для поставщиков, потребителей и матрицы стоимостей")
+        logging.info(
+            "Создание полей ввода для поставщиков, потребителей и матрицы стоимостей"
+        )
         for layout in (self.suppliers_layout, self.consumers_layout):
             while layout.count():
                 child = layout.takeAt(0)
@@ -184,7 +189,9 @@ class SolveDialog(QtWidgets.QDialog):
             if n <= 0 or m <= 0:
                 raise ValueError
         except ValueError:
-            QtWidgets.QMessageBox.critical(self, "Ошибка", "Введите корректные положительные числа для n и m.")
+            QtWidgets.QMessageBox.critical(
+                self, "Ошибка", "Введите корректные положительные числа для n и m."
+            )
             return
 
         # Создаем поля для поставщиков
@@ -192,7 +199,7 @@ class SolveDialog(QtWidgets.QDialog):
         self.suppliers_layout.addWidget(sup_label)
         for i in range(n):
             le = QtWidgets.QLineEdit()
-            le.setPlaceholderText(f"Поставщик {i+1}")
+            le.setPlaceholderText(f"Поставщик {i + 1}")
             self.suppliers_layout.addWidget(le)
             self.supplier_entries.append(le)
 
@@ -201,7 +208,7 @@ class SolveDialog(QtWidgets.QDialog):
         self.consumers_layout.addWidget(cons_label)
         for i in range(m):
             le = QtWidgets.QLineEdit()
-            le.setPlaceholderText(f"Потребитель {i+1}")
+            le.setPlaceholderText(f"Потребитель {i + 1}")
             self.consumers_layout.addWidget(le)
             self.consumer_entries.append(le)
 
@@ -210,14 +217,16 @@ class SolveDialog(QtWidgets.QDialog):
             row_entries = []
             for j in range(m):
                 le = QtWidgets.QLineEdit()
-                le.setPlaceholderText(f"C[{i+1},{j+1}]")
+                le.setPlaceholderText(f"C[{i + 1},{j + 1}]")
                 self.cost_layout.addWidget(le, i, j)
                 row_entries.append(le)
             self.cost_entries.append(row_entries)
 
     def import_file(self):
         logging.info("Открытие диалога импорта файла")
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Импортировать задачу", "", "Text Files (*.txt)")
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, "Импортировать задачу", "", "Text Files (*.txt)"
+        )
         if not filename:
             return
         try:
@@ -237,7 +246,9 @@ class SolveDialog(QtWidgets.QDialog):
                     matrix_start = i + 1
                     break
             if suppliers_line is None or consumers_line is None or matrix_start is None:
-                QtWidgets.QMessageBox.critical(self, "Ошибка импорта", "Неверный формат файла.")
+                QtWidgets.QMessageBox.critical(
+                    self, "Ошибка импорта", "Неверный формат файла."
+                )
                 logging.error("Импорт: неверный формат файла")
                 return
             suppliers_str = suppliers_line.split("Поставщики:")[1].strip()
@@ -266,8 +277,15 @@ class SolveDialog(QtWidgets.QDialog):
             for i in range(n):
                 for j in range(m):
                     self.cost_entries[i][j].setText(str(cost[i][j]))
-            QtWidgets.QMessageBox.information(self, "Импорт", "Задача успешно импортирована.")
-            logging.info("Импорт успешен: suppliers=%s, consumers=%s, cost=%s", suppliers, consumers, cost)
+            QtWidgets.QMessageBox.information(
+                self, "Импорт", "Задача успешно импортирована."
+            )
+            logging.info(
+                "Импорт успешен: suppliers=%s, consumers=%s, cost=%s",
+                suppliers,
+                consumers,
+                cost,
+            )
         except Exception as e:
             logging.error("Ошибка при импорте: %s", str(e))
             QtWidgets.QMessageBox.critical(self, "Ошибка импорта", str(e))
@@ -280,7 +298,9 @@ class SolveDialog(QtWidgets.QDialog):
             if n <= 0 or m <= 0:
                 raise ValueError
         except ValueError:
-            QtWidgets.QMessageBox.critical(self, "Ошибка", "Введите корректные положительные числа для n и m.")
+            QtWidgets.QMessageBox.critical(
+                self, "Ошибка", "Введите корректные положительные числа для n и m."
+            )
             return
 
         suppliers = []
@@ -299,20 +319,30 @@ class SolveDialog(QtWidgets.QDialog):
                 cost.append(cost_row)
         except ValueError:
             logging.error("Ошибка преобразования данных в числовой формат")
-            QtWidgets.QMessageBox.critical(self, "Ошибка", "Введите корректные числовые значения для всех полей.")
+            QtWidgets.QMessageBox.critical(
+                self, "Ошибка", "Введите корректные числовые значения для всех полей."
+            )
             return
 
         solution_type = self.solution_type_group.checkedId()
         export = self.export_checkbox.isChecked()
         export_format = "txt" if self.radio_txt.isChecked() else "word"
 
-        result = self.model.solve_transportation(suppliers=suppliers, consumers=consumers, 
-                                                 solution_type=solution_type, cost=cost)
+        result = self.model.solve_transportation(
+            suppliers=suppliers,
+            consumers=consumers,
+            solution_type=solution_type,
+            cost=cost,
+        )
         logging.info("Результат решения получен")
 
         if export:
-            filename, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Сохранить результат", "",
-                                                                "Text Files (*.txt);;Word Documents (*.docx)")
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Сохранить результат",
+                "",
+                "Text Files (*.txt);;Word Documents (*.docx)",
+            )
             if filename:
                 try:
                     self.model.export_result(result, export_format, filename)
@@ -323,6 +353,7 @@ class SolveDialog(QtWidgets.QDialog):
         result_dialog = ResultDialog(self, result)
         result_dialog.exec()
 
+
 class GenerateDialog(QtWidgets.QDialog):
     """
     Диалог для генерации задачи.
@@ -331,6 +362,7 @@ class GenerateDialog(QtWidgets.QDialog):
       - Если галочка снята -> появляются радио-кнопки "Только ответ" и "Полное решение".
       - Если галочка снова установлена -> радио-кнопки скрываются и не влияют на итог.
     """
+
     def __init__(self, parent, model):
         super().__init__(parent)
         self.model = model
@@ -341,12 +373,12 @@ class GenerateDialog(QtWidgets.QDialog):
 
         # Основной лейаут диалога
         main_layout = QtWidgets.QVBoxLayout(self)
-        
+
         # Создаем QScrollArea для прокрутки содержимого
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setWidgetResizable(True)
         main_layout.addWidget(self.scroll_area)
-        
+
         # Внутренний виджет, содержащий все элементы
         self.inner_widget = QtWidgets.QWidget()
         self.inner_layout = QtWidgets.QVBoxLayout(self.inner_widget)
@@ -434,7 +466,9 @@ class GenerateDialog(QtWidgets.QDialog):
             if n <= 0 or m <= 0:
                 raise ValueError
         except ValueError:
-            QtWidgets.QMessageBox.critical(self, "Ошибка", "Введите корректные положительные числа для n и m.")
+            QtWidgets.QMessageBox.critical(
+                self, "Ошибка", "Введите корректные положительные числа для n и m."
+            )
             return
 
         export = self.export_checkbox.isChecked()
@@ -455,8 +489,12 @@ class GenerateDialog(QtWidgets.QDialog):
 
         # Если выбран экспорт, сохраняем результат
         if export:
-            filename, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Сохранить результат", "",
-                                                                "Text Files (*.txt);;Word Documents (*.docx)")
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self,
+                "Сохранить результат",
+                "",
+                "Text Files (*.txt);;Word Documents (*.docx)",
+            )
             if filename:
                 try:
                     self.model.export_result(result, export_format, filename)
@@ -468,10 +506,12 @@ class GenerateDialog(QtWidgets.QDialog):
         result_dialog = ResultDialog(self, result)
         result_dialog.exec()
 
+
 class ResultDialog(QtWidgets.QDialog):
     """
     Диалог для отображения результата.
     """
+
     def __init__(self, parent, result):
         super().__init__(parent)
         self.setWindowTitle("Результат")
@@ -483,23 +523,23 @@ class ResultDialog(QtWidgets.QDialog):
 
     def initUI(self):
         main_layout = QtWidgets.QVBoxLayout(self)
-        
+
         # Создаем QScrollArea для содержимого результата
         scroll_area = QtWidgets.QScrollArea()
         scroll_area.setWidgetResizable(True)
         main_layout.addWidget(scroll_area)
-        
+
         # Внутренний виджет, который будет помещен в scroll_area
         content_widget = QtWidgets.QWidget()
         scroll_area.setWidget(content_widget)
-        
+
         content_layout = QtWidgets.QVBoxLayout(content_widget)
         # Используем QTextEdit с включенными полосами прокрутки (по умолчанию они есть)
         self.result_text = QtWidgets.QTextEdit()
         self.result_text.setReadOnly(True)
         self.result_text.setText(self.result)
         content_layout.addWidget(self.result_text)
-        
+
         # Кнопка "Закрыть" добавляется вне области прокрутки
         self.btn_close = QtWidgets.QPushButton("Закрыть")
         self.btn_close.clicked.connect(self.close)

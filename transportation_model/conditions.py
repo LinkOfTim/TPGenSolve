@@ -1,5 +1,6 @@
 # transportation_model/conditions
 
+
 def format_conditions(problem: dict) -> str:
     """
     Формирует блок условий транспортной задачи.
@@ -10,7 +11,7 @@ def format_conditions(problem: dict) -> str:
     output += f"Поставщики: {problem['suppliers']}\n"
     output += f"Потребители: {problem['consumers']}\n"
     output += "Матрица стоимостей:\n"
-    for row in problem['cost']:
+    for row in problem["cost"]:
         output += "\t".join(str(x) for x in row) + "\n"
     output += "====================================\n\n"
     return output

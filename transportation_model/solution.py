@@ -1,5 +1,6 @@
 # transportation_model/solution.py
 
+
 def format_solution(total: int, alloc_opt) -> str:
     """
     Формирует блок решения или вывода транспортной задачи.

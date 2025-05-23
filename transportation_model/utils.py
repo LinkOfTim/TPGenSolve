@@ -1,6 +1,7 @@
 # transportation_model/utils.py
 # PERF: Можно ускорить используя CPython
 
+
 def balance_problem(suppliers, consumers):
     total_supply = sum(suppliers)
     total_demand = sum(consumers)
@@ -15,10 +16,11 @@ def balance_problem(suppliers, consumers):
         balanced = True
     return suppliers, consumers, balanced
 
+
 def northwest_corner(suppliers, consumers):
     n = len(suppliers)
     m = len(consumers)
-    alloc = [[0]*m for _ in range(n)]
+    alloc = [[0] * m for _ in range(n)]
     i, j = 0, 0
     s = suppliers.copy()
     d = consumers.copy()
@@ -27,29 +29,30 @@ def northwest_corner(suppliers, consumers):
         alloc[i][j] = allocation
         s[i] -= allocation
         d[j] -= allocation
-        if i == n-1 and j == m-1:
+        if i == n - 1 and j == m - 1:
             break
-        if s[i] == 0 and i < n-1:
+        if s[i] == 0 and i < n - 1:
             i += 1
-        elif d[j] == 0 and j < m-1:
+        elif d[j] == 0 and j < m - 1:
             j += 1
         else:
             if s[i] == 0 and d[j] == 0:
-                if i < n-1:
+                if i < n - 1:
                     i += 1
-                if j < m-1:
+                if j < m - 1:
                     j += 1
-                if i == n-1 and j == m-1:
+                if i == n - 1 and j == m - 1:
                     break
             else:
                 break
     return alloc
 
+
 def compute_potentials(cost, alloc):
     n = len(cost)
     m = len(cost[0])
-    u = [None]*n
-    v = [None]*m
+    u = [None] * n
+    v = [None] * m
     u[0] = 0
     changed = True
     while changed:
@@ -71,15 +74,17 @@ def compute_potentials(cost, alloc):
             v[j] = 0
     return u, v
 
+
 def compute_deltas(cost, alloc, u, v):
     n = len(cost)
     m = len(cost[0])
-    delta = [[None]*m for _ in range(n)]
+    delta = [[None] * m for _ in range(n)]
     for i in range(n):
         for j in range(m):
             if alloc[i][j] == 0:
                 delta[i][j] = cost[i][j] - (u[i] + v[j])
     return delta
+
 
 def total_cost(cost, alloc):
     total = 0
@@ -90,6 +95,7 @@ def total_cost(cost, alloc):
             total += cost[i][j] * alloc[i][j]
     return total
 
+
 def find_cycle(alloc, start):
     n = len(alloc)
     m = len(alloc[0])
@@ -97,40 +103,43 @@ def find_cycle(alloc, start):
     if start not in basic:
         basic.append(start)
     start_cell = start
+
     def search(path, last_move):
         current = path[-1]
         if len(path) >= 4 and current == start_cell:
             return path
         if last_move is None:
-            for direction in ['row', 'col']:
+            for direction in ["row", "col"]:
                 res = search(path, direction)
                 if res:
                     return res
-        elif last_move == 'row':
+        elif last_move == "row":
             col = current[1]
-            for (i, j) in basic:
+            for i, j in basic:
                 if j == col and i != current[0]:
                     if (i, j) == start_cell and len(path) >= 3:
                         return path + [(i, j)]
                     if (i, j) not in path:
-                        res = search(path + [(i, j)], 'col')
+                        res = search(path + [(i, j)], "col")
                         if res:
                             return res
-        elif last_move == 'col':
+        elif last_move == "col":
             row = current[0]
-            for (i, j) in basic:
+            for i, j in basic:
                 if i == row and j != current[1]:
                     if (i, j) == start_cell and len(path) >= 3:
                         return path + [(i, j)]
                     if (i, j) not in path:
-                        res = search(path + [(i, j)], 'row')
+                        res = search(path + [(i, j)], "row")
                         if res:
                             return res
         return None
+
     cycle = search([start_cell], None)
     if cycle and cycle[0] == cycle[-1]:
         return cycle[:-1]
     return cycle
+
 
 def optimize_transportation(cost, alloc):
     iteration = 0
@@ -143,7 +152,11 @@ def optimize_transportation(cost, alloc):
         min_delta = 0
         for i in range(len(cost)):
             for j in range(len(cost[0])):
-                if alloc[i][j] == 0 and delta[i][j] is not None and delta[i][j] < min_delta:
+                if (
+                    alloc[i][j] == 0
+                    and delta[i][j] is not None
+                    and delta[i][j] < min_delta
+                ):
                     min_delta = delta[i][j]
                     entering = (i, j)
         iteration_logs += f"Итерация {iteration}:\n"
@@ -161,7 +174,9 @@ def optimize_transportation(cost, alloc):
                     row_d.append("-")
             iteration_logs += "\t".join(row_d) + "\n"
         if entering is None:
-            iteration_logs += f"Оптимальное решение достигнуто на итерации {iteration}.\n"
+            iteration_logs += (
+                f"Оптимальное решение достигнуто на итерации {iteration}.\n"
+            )
             break
         iteration_logs += f"Входящая ячейка: {entering} с дельтой {min_delta}\n"
         cycle = find_cycle(alloc, entering)
@@ -171,7 +186,9 @@ def optimize_transportation(cost, alloc):
         iteration_logs += f"Найден цикл: {cycle}\n"
         minus_positions = cycle[1::2]
         theta = min(alloc[i][j] for (i, j) in minus_positions)
-        iteration_logs += f"Theta (минимальное значение на позициях с минусом): {theta}\n"
+        iteration_logs += (
+            f"Theta (минимальное значение на позициях с минусом): {theta}\n"
+        )
         for idx, (i, j) in enumerate(cycle):
             if idx % 2 == 0:
                 alloc[i][j] += theta
