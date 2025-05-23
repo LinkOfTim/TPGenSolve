@@ -8,10 +8,16 @@ from view import MainWindow
 from docx import Document
 from transportation_model import solve_problem
 
+
 class ModelWrapper:
     def solve_transportation(self, suppliers, consumers, cost, solution_type):
         logging.info("Выбрано подробное решение")
-        return solve_problem(suppliers=suppliers, consumers=consumers, solution_type=solution_type, cost=cost) 
+        return solve_problem(
+            suppliers=suppliers,
+            consumers=consumers,
+            solution_type=solution_type,
+            cost=cost,
+        )
 
     def generate_problem(self, n, m, solution_type):
         logging.info("Генерация проблемы: n=%s, m=%s", n, m)
